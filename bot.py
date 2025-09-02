@@ -3,7 +3,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 import os
 
 # Get bot token from environment variable (Render secret)
-TOKEN = os.getenv("8115790971:AAFO62ui_Vv1KUabC8fYrmZkhhFWdga4dyY")
+TOKEN = os.getenv("YOUR_BOT_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [["📝 Register", "ℹ️ Info"], ["❌ Cancel"]]
