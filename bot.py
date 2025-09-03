@@ -1,5 +1,5 @@
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update
-from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 import os
 
 # Get bot token from environment variable (Render secret)
@@ -9,7 +9,7 @@ TOKEN = os.getenv("YOUR_BOT_TOKEN")
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("📝 Register", callback_data="register")],
-        [InlineKeyboardButton("📞 Contact", url="https://t.me/NamadevR911")],
+        [InlineKeyboardButton("📞 Contact", url="https://t.me/NamadevR911")],  # 🔗 Direct redirect
         [InlineKeyboardButton("❌ Cancel", callback_data="cancel")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -33,12 +33,8 @@ def main():
     # Commands
     app.add_handler(CommandHandler("start", start))
 
-    # Button handler
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, button_handler))
-    app.add_handler(CommandHandler("cancel", start))
-    app.add_handler(CommandHandler("register", start))
-    app.add_handler(CommandHandler("contact", start))
-    app.add_handler(MessageHandler(filters.ALL, button_handler))
+    # Callback handler for inline buttons
+    app.add_handler(CallbackQueryHandler(button_handler))
 
     app.run_polling()
 
