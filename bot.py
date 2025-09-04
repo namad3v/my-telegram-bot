@@ -1,4 +1,4 @@
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton, Update
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton, Update
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 import os
 
@@ -7,18 +7,30 @@ TOKEN = os.getenv("YOUR_BOT_TOKEN")
 
 # --- Commands ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton("📡 Website", url="https://calphs0.free.nf/?i=1")],   # 🌐 Website redirect
-        [InlineKeyboardButton("📞 Contact", url="https://t.me/NamadevR911")],  # 🔗 Direct redirect
-        [InlineKeyboardButton("📲📲 Channel", url="https://t.me/mrimproperGamer01")]  # 📲 Channel redirect
+    # Inline Keyboard (with links)
+    inline_keyboard = [
+        [InlineKeyboardButton("📡 Website", url="https://your-website.com")],
+        [InlineKeyboardButton("📞 Contact", url="https://t.me/NamadevR911")],
+        [InlineKeyboardButton("📲📲 Channel", url="https://t.me/your_channel")]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Welcome! Choose an option:", reply_markup=reply_markup)
+    inline_markup = InlineKeyboardMarkup(inline_keyboard)
 
-# --- Button Callbacks (only needed if you keep callback buttons) ---
-async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
+    # Reply Keyboard (normal buttons)
+    reply_keyboard = [
+        ["📡 Website", "📞 Contact"],
+        ["📲📲 Channel"]
+    ]
+    reply_markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
+
+    # Send message with both keyboards
+    await update.message.reply_text(
+        "Welcome! Choose an option:",
+        reply_markup=inline_markup
+    )
+    await update.message.reply_text(
+        "Or use the quick buttons below 👇",
+        reply_markup=reply_markup
+    )
 
 # --- Main ---
 def main():
@@ -27,8 +39,8 @@ def main():
     # Commands
     app.add_handler(CommandHandler("start", start))
 
-    # Callback handler (kept in case you add callback buttons later)
-    app.add_handler(CallbackQueryHandler(button_handler))
+    # Still keep Callback handler (if you add future callback buttons)
+    app.add_handler(CallbackQueryHandler(lambda u, c: u.callback_query.answer()))
 
     app.run_polling()
 
